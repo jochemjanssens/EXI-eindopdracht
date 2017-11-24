@@ -23,4 +23,5 @@ Projectie op de sjoelbakken
 
 ## Technisch
 - Sjoelbak met detectie via Arduino (Johnny-Five)
+- Connectie met Socket.io
 - Game met Phaser.js
