@@ -2,6 +2,12 @@ import Button from '../objects/Button';
 
 const BACKGROUND_SPEED = 30;
 
+const socket = io.connect(`http://localhost:8080/`);
+let play = false;
+socket.on(`start`, message => {
+  play = message;
+});
+
 export default class Menu extends Phaser.State {
   create() {
     this.createBackground();
@@ -19,5 +25,10 @@ export default class Menu extends Phaser.State {
   }
   buttonClicked() {
     this.state.start(`Play`);
+  }
+  update() {
+    if (play) {
+      this.state.start(`Play`);
+    }
   }
 }

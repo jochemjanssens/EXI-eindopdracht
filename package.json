@@ -1,13 +1,9 @@
 {
-  "name": "phaserpack",
+  "name": "EXI",
   "version": "0.1.0",
   "scripts": {
     "start": "node app.js",
-<<<<<<< HEAD
-    "development": "npm run clean && NODE_ENV=development webpack-dev-server --open",
-=======
     "development": "npm run clean && NODE_ENV=development webpack-dev-server --open & yarn run start",
->>>>>>> master
     "serve": "ws -d ./dist -c -p 3000 ",
     "clean": "rimraf ./dist",
     "production": "npm run clean && NODE_ENV=production webpack -p"

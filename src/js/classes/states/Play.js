@@ -1,15 +1,34 @@
 import Player from '../objects/Player';
 import Button from '../objects/Button';
 
-const BACKGROUND_SPEED = 30;
-const PLATFORM_SPEED = 200;
+const BACKGROUND_SPEED = 3;
+const PLATFORM_SPEED = 3;
 const ENEMY_INTERVAL = 2000;
 
 const socket = io.connect(`http://localhost:8080/`);
-let down = false;
+let down1 = false;
+let down2 = false;
+
+let restart = false;
+socket.on(`start`, message => {
+  restart = message;
+});
+
 socket.on(`update`, message => {
-  console.log(message);
-  down = message;
+  if (Object.keys(message)[0] === `one`) {
+    if (message.one === true) {
+      down1 = true;
+    } else {
+      down1 = false;
+    }
+  }
+  if (Object.keys(message)[0] === `two`) {
+    if (message.two === true) {
+      down2 = true;
+    } else {
+      down2 = false;
+    }
+  }
 });
 
 
@@ -24,7 +43,6 @@ export default class Play extends Phaser.State {
     this.makePlatforms();
     this.makeStartPlatforms();
     this.makePlayer();
-    this.makeCoins();
     this.makeLives();
     this.createScore();
   }
@@ -35,7 +53,6 @@ export default class Play extends Phaser.State {
   }
   createSounds() {
     this.jumpSound = this.add.audio(`jumpSound`);
-    this.coinSound = this.add.audio(`coinSound`);
     this.explodeSound = this.add.audio(`explodeSound`);
   }
   makePlatforms() {
@@ -99,25 +116,6 @@ export default class Play extends Phaser.State {
     this.player = new Player(this.game, 140, 140);
     this.add.existing(this.player);
   }
-  makeCoins() {
-    this.points = 0;
-
-    this.coins = this.add.group();
-    this.coins.enableBody = true;
-    this.coins.physicsBodyType = Phaser.Physics.ARCADE;
-    this.coins.createMultiple(20, `tiles`, `coinGold.png`);
-    this.coins.setAll(`anchor.x`, 0.5);
-    this.coins.setAll(`anchor.y`, 0.5);
-    this.coins.setAll(`outOfBoundsKill`, true);
-    this.coins.setAll(`checkWorldBounds`, true);
-    this.coinTimer = this.time.events.loop(500, this.showCoin, this);
-  }
-  showCoin() {
-    const coin = this.coins.getFirstExists(false);
-    const yPos = this.rnd.integerInRange(100, this.game.height - 300);
-    coin.reset(this.world.width + 22, yPos);
-    coin.body.velocity.set(- PLATFORM_SPEED, 0);
-  }
   makeLives() {
     this.totalHearts = 3;
     this.counter = this.lives;
@@ -147,36 +145,30 @@ export default class Play extends Phaser.State {
 
   inputHandler() {
     this.player.body.velocity.x = 0;
-    if (this.cursors.left.isDown) {
-      this.player.body.velocity.x = - 500;
+    if (down2 === true) {
+      console.log(`left`);
+      this.player.body.velocity.x = - 100;
       this.player.animations.play(`walk`);
     }
-    if (this.cursors.right.isDown || down === `true`) {
-      console.log(down);
-      this.player.body.velocity.x = 500;
+    if (down1 === true) {
+      console.log(`right`);
+      this.player.body.velocity.x = 100;
       this.player.animations.play(`walk`);
+    }
+    if (restart) {
+      this.state.start(`Play`);
     }
   }
   checkCollisions() {
-    this.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
     this.physics.arcade.overlap(this.player, this.explosives, this.explosiveHit, null, this);
     if (this.player.y > this.game.height) {
       this.killPlayer();
     }
   }
-  coinHit(player, coin) {
-    coin.kill();
-    this.coinSound.play();
-    this.points++;
-    this.scoreText.text = `Score: ${  this.points}`;
-  }
   killPlayer() {
     this.sea.autoScroll(0, 0);
     this.platforms.forEach(platform => {
       platform.body.velocity.set(0, 0);
-    });
-    this.coins.forEach(coin => {
-      coin.body.velocity.set(0, 0);
     });
     this.explosives.forEach(explosive => {
       explosive.body.velocity.set(0, 0);
