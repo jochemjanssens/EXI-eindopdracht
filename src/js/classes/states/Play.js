@@ -8,6 +8,12 @@ const ENEMY_INTERVAL = 2000;
 const socket = io.connect(`http://localhost:8080/`);
 let down1 = false;
 let down2 = false;
+
+let restart = false;
+socket.on(`start`, message => {
+  restart = message;
+});
+
 socket.on(`update`, message => {
   if (Object.keys(message)[0] === `one`) {
     if (message.one === true) {
@@ -148,6 +154,9 @@ export default class Play extends Phaser.State {
       console.log(`right`);
       this.player.body.velocity.x = 100;
       this.player.animations.play(`walk`);
+    }
+    if (restart) {
+      this.state.start(`Play`);
     }
   }
   checkCollisions() {
