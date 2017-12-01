@@ -25,3 +25,12 @@ Projectie op de sjoelbakken
 - Sjoelbak met detectie via Arduino (Johnny-Five)
 - Connectie met Socket.io
 - Game met Phaser.js
+
+## Arduino
+
+### lasers
+We gebruiken KY-008 lasers, deze worden allemaal tesamen aangesloten op poort A9
+
+### photoresistors
+Voor de lichtmeting gebruiken we photoresistors.
+Deze zitten op poort A0, A2, A4 en A5

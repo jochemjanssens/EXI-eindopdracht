@@ -37,33 +37,36 @@ const board = new five.Board();
 board.on(`ready`, function() {
   const photoresistor1 = new five.Sensor({
     pin: `A0`,
-    freq: 10
+    freq: 1
   });
   const photoresistor2 = new five.Sensor({
-    pin: `A5`,
-    freq: 10
+    pin: `A2`,
+    freq: 1
   });
   const photoresistor3 = new five.Sensor({
-    pin: `A2`,
-    freq: 10
+    pin: `A4`,
+    freq: 1
   });
   const photoresistor4 = new five.Sensor({
-    pin: `A4`,
-    freq: 10
+    pin: `A5`,
+    freq: 1
   });
-  const laser1 = new five.Led(9);
 
-  laser1.on();
-
+  const laser = new five.Led(9);
+  let laserOn = false;
 
   let raak1 = false;
+  let base1 = false;
   photoresistor1.on(`data`, function() {
-    console.log("1: " + this.value);
-    if (this.value > 900 && raak1 === false) {
+    if(base1 === false && this.value > 1){
+      base1 = this.value;
+      console.log('1: ' + base1);
+    }
+    if (this.value > base1-100 && raak1 === false && laserOn === true) {
       console.log(`raak1`);
       io.sockets.emit(`update`, {"one": true});
       raak1 = true;
-    } else if(this.value < 900 && raak1 === true)  {
+    } else if(this.value < base1-100 && raak1 === true)  {
       io.sockets.emit(`update`, {"one": false});
 
       raak1 = false;
@@ -71,45 +74,64 @@ board.on(`ready`, function() {
   });
 
   let raak2 = false;
+  let base2 = false;
   photoresistor2.on(`data`, function() {
-
-      console.log("2: " + this.value);
-    if (this.value > 900 && raak2 === false) {
+    if(base2 === false && this.value > 1){
+      base2 = this.value;
+      console.log('2: ' + base2);
+      checkLaser();
+    }
+    if (this.value > base2-100 && raak2 === false && laserOn === true) {
       console.log(`raak2`);
-      io.sockets.emit(`update`, {"one": true});
+      io.sockets.emit(`update`, {"two": true});
       raak2 = true;
-    } else if(this.value < 900 && raak2 === true)  {
-      io.sockets.emit(`update`, {"one": false});
+    } else if(this.value < base2-100 && raak2 === true)  {
+      io.sockets.emit(`update`, {"two": false});
 
       raak2 = false;
     }
   });
   let raak3 = false;
+  let base3 = false;
   photoresistor3.on(`data`, function() {
-
-      console.log("3: " + this.value);
-    if (this.value > 900 && raak3 === false) {
+    if(base3 === false && this.value > 1){
+      base3 = this.value;
+      console.log('3: ' + base3);
+      checkLaser();
+    }
+    if (this.value > base3-100 && raak3 === false && laserOn === true) {
       console.log(`raak3`);
-      io.sockets.emit(`update`, {"one": true});
+      io.sockets.emit(`update`, {"three": true});
       raak3 = true;
-    } else if(this.value < 900 && raak3 === true)  {
-      io.sockets.emit(`update`, {"one": false});
+    } else if(this.value < base3-100 && raak3 === true)  {
+      io.sockets.emit(`update`, {"three": false});
 
       raak3 = false;
     }
   });
   let raak4 = false;
+  let base4 = false;
   photoresistor4.on(`data`, function() {
-
-      console.log("4: " + this.value);
-    if (this.value > 900 && raak4 === false) {
+    if(base4 === false && this.value > 1){
+      base4 = this.value;
+      console.log('4: ' +  base4);
+      checkLaser();
+    }
+    if (this.value > base4-100 && raak4 === false && laserOn === true) {
       console.log(`raak4`);
-      io.sockets.emit(`update`, {"one": true});
+      io.sockets.emit(`update`, {"four": true});
       raak4 = true;
-    } else if(this.value < 900 && raak4 === true)  {
-      io.sockets.emit(`update`, {"one": false});
+    } else if(this.value < base4-100 && raak4 === true)  {
+      io.sockets.emit(`update`, {"four": false});
 
       raak4 = false;
     }
   });
+
+  const checkLaser = () => {
+    if(base1 !== false && base2 !== false && base3 !== false && base4 !== false){
+      laser.on();
+      laserOn = true;
+    }
+  }
 });

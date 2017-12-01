@@ -2,12 +2,14 @@ import Player from '../objects/Player';
 import Button from '../objects/Button';
 
 const BACKGROUND_SPEED = 3;
-const PLATFORM_SPEED = 3;
+const PLATFORM_SPEED = 5;
 const ENEMY_INTERVAL = 2000;
 
 const socket = io.connect(`http://localhost:8080/`);
 let down1 = false;
 let down2 = false;
+let down3 = false;
+let down4 = false;
 
 let restart = false;
 socket.on(`start`, message => {
@@ -18,6 +20,7 @@ socket.on(`update`, message => {
   if (Object.keys(message)[0] === `one`) {
     if (message.one === true) {
       down1 = true;
+      console.log(`1`);
     } else {
       down1 = false;
     }
@@ -25,8 +28,25 @@ socket.on(`update`, message => {
   if (Object.keys(message)[0] === `two`) {
     if (message.two === true) {
       down2 = true;
+      console.log(`2`);
     } else {
       down2 = false;
+    }
+  }
+  if (Object.keys(message)[0] === `three`) {
+    if (message.three === true) {
+      down3 = true;
+      console.log(`3`);
+    } else {
+      down3 = false;
+    }
+  }
+  if (Object.keys(message)[0] === `four`) {
+    if (message.four === true) {
+      down4 = true;
+      console.log(`4`);
+    } else {
+      down4 = false;
     }
   }
 });
@@ -145,15 +165,15 @@ export default class Play extends Phaser.State {
 
   inputHandler() {
     this.player.body.velocity.x = 0;
-    if (down2 === true) {
-      console.log(`left`);
+    if (down2 === true || down4 === true) {
       this.player.body.velocity.x = - 100;
       this.player.animations.play(`walk`);
+      console.log(`left`);
     }
-    if (down1 === true) {
-      console.log(`right`);
+    if (down1 === true || down3 === true) {
       this.player.body.velocity.x = 100;
       this.player.animations.play(`walk`);
+      console.log(`right`);
     }
     if (restart) {
       this.state.start(`Play`);
