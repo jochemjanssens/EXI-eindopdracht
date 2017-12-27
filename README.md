@@ -18,9 +18,6 @@ De sjoelbak staat voor een muur waar de projectie op staat.
 - 8 lichtsensoren
 - 1 Arduino
 
-## Extra
-Projectie op de sjoelbakken
-
 ## Technisch
 - Sjoelbak met detectie via Arduino (Johnny-Five)
 - Connectie met Socket.io
@@ -29,8 +26,22 @@ Projectie op de sjoelbakken
 ## Arduino
 
 ### lasers
-We gebruiken KY-008 lasers, deze worden allemaal tesamen aangesloten op poort A9
+We gebruiken KY-008 lasers, deze worden allemaal tesamen aangesloten op poort D11
 
 ### photoresistors
 Voor de lichtmeting gebruiken we photoresistors.
-Deze zitten op poort A0, A2, A4 en A5
+Deze zitten op poort A0, A1, A2, A3
+
+## Setup
+Om de eerste sjoelbak op te zetten
+- Run de site lokaal (yarn run development)
+- Sluit de Arduino aan (waar Firmata-software opstaat)
+- Van de sjoelbak sluit je de juiste kabels aan op de Arduino
+  - Rood-tape: GND
+  - Rood: D11
+  - Blauw: A0
+  - Geel: A1
+  - Geel-tape: A2
+  - Zwart: A3
+  - Blauw - Groen: 5V
+  - Wit: GND

@@ -40,19 +40,19 @@ board.on(`ready`, function() {
     freq: 1
   });
   const photoresistor2 = new five.Sensor({
-    pin: `A2`,
+    pin: `A1`,
     freq: 1
   });
   const photoresistor3 = new five.Sensor({
-    pin: `A4`,
+    pin: `A2`,
     freq: 1
   });
   const photoresistor4 = new five.Sensor({
-    pin: `A5`,
+    pin: `A3`,
     freq: 1
   });
 
-  const laser = new five.Led(9);
+  const laser = new five.Led(11);
   let laserOn = false;
 
   let raak1 = false;
@@ -130,6 +130,7 @@ board.on(`ready`, function() {
 
   const checkLaser = () => {
     if(base1 !== false && base2 !== false && base3 !== false && base4 !== false){
+      console.log('laseracitve');
       laser.on();
       laserOn = true;
     }
