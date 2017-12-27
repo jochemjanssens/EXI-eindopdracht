@@ -9,6 +9,8 @@ let restart = false;
 let redScore = 0;
 const blueScore = 0;
 
+let redScoreText, blueScoreText;
+
 
 socket.on(`start`, message => {
   restart = message;
@@ -103,31 +105,39 @@ export default class Play extends Phaser.State {
   createScore() {
     const style = {font: `bold 50px Avenir`, fill: `#E34C71`, boundsAlignH: `center`, boundsAlignV: `middle`};
 
-    const redScoreText  = this.game.add.text(0, 0, `${redScore}`, style);
+    redScoreText  = this.game.add.text(0, 0, `${redScore}`, style);
     redScoreText.setTextBounds(0, 0, TOPBARHEIGHT, TOPBARHEIGHT);
 
-    const blueScoreText  = this.game.add.text(this.game.width - TOPBARHEIGHT, 0, `${blueScore}`, style);
+    blueScoreText  = this.game.add.text(this.game.width - TOPBARHEIGHT, 0, `${blueScore}`, style);
     blueScoreText.setTextBounds(0, 0, TOPBARHEIGHT, TOPBARHEIGHT);
   }
   update() {
+    this.inputHandler();
   }
 
   inputHandler() {
     if (down1 === true) {
-      console.log(`left`);
-      redScore += 1;
+      down1 = false;
+      redScore += 2;
+      redScoreText.setText(redScore);
     }
     if (down2 === true) {
-      console.log(`left`);
-      redScore += 2;
+
+      down2 = false;
+      redScore += 3;
+      redScoreText.setText(redScore);
     }
     if (down3 === true) {
-      console.log(`right`);
-      redScore += 3;
+
+      down3 = false;
+      redScore += 4;
+      redScoreText.setText(redScore);
     }
     if (down4 === true) {
-      console.log(`right`);
-      redScore += 4;
+
+      down4 = false;
+      redScore += 1;
+      redScoreText.setText(redScore);
     }
     if (restart) {
       this.state.start(`Play`);
