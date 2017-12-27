@@ -4,17 +4,11 @@ let down2 = false;
 let down3 = false;
 let down4 = false;
 let TOPBARHEIGHT, CENTERFIELD;
-let restart = false;
 
 let redScore = 0;
-const blueScore = 0;
+let blueScore = 0;
 
-let redScoreText, blueScoreText;
-
-
-socket.on(`start`, message => {
-  restart = message;
-});
+let redScoreText, blueScoreText, chef;
 
 socket.on(`update`, message => {
   if (Object.keys(message)[0] === `one`) {
@@ -99,7 +93,9 @@ export default class Play extends Phaser.State {
   }
 
   createPlayer() {
-    this.game.add.sprite(this.game.width / 2 - 110, CENTERFIELD - 150, `player`);
+    chef = this.game.add.sprite(this.game.width / 2 - 110, CENTERFIELD - 150, `player`);
+    this.game.physics.enable(chef, Phaser.Physics.ARCADE);
+
   }
 
   createScore() {
@@ -116,31 +112,37 @@ export default class Play extends Phaser.State {
   }
 
   inputHandler() {
+    chef.body.velocity.x = 0;
     if (down1 === true) {
       down1 = false;
-      redScore += 2;
-      redScoreText.setText(redScore);
+      this.updateScore(`red`, 2);
+      chef.body.velocity.x = 2000;
     }
     if (down2 === true) {
-
       down2 = false;
-      redScore += 3;
-      redScoreText.setText(redScore);
+      this.updateScore(`red`, 3);
+      chef.body.velocity.x = 3000;
     }
     if (down3 === true) {
-
       down3 = false;
-      redScore += 4;
-      redScoreText.setText(redScore);
+      this.updateScore(`red`, 4);
+      chef.body.velocity.x = 4000;
     }
     if (down4 === true) {
-
       down4 = false;
-      redScore += 1;
+      this.updateScore(`red`, 1);
+      chef.body.velocity.x = 1000;
+    }
+  }
+
+  updateScore(team, points) {
+    if (team === `red`) {
+      redScore += points;
       redScoreText.setText(redScore);
     }
-    if (restart) {
-      this.state.start(`Play`);
+    if (team === `blue`) {
+      blueScore += points;
+      blueScore.setText(redScore);
     }
   }
 }
