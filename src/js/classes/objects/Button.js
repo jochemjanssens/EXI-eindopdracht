@@ -3,7 +3,7 @@ export default class Button extends Phaser.Button {
     super(game, x, y, `buttons`, callback, callbackContext, `${colorName}-over`, `${colorName}-normal`, `${colorName}-down`);
     this.labelField = new Phaser.Text(game, 0, 0, label,
       {
-        font: `32px KenFuture`
+        font: `32px Avenir`
       }
     );
     this.labelField.anchor.setTo(0.5, 0.5);

@@ -1,17 +1,15 @@
-import Player from '../objects/Player';
-import Button from '../objects/Button';
-
-const BACKGROUND_SPEED = 3;
-const PLATFORM_SPEED = 5;
-const ENEMY_INTERVAL = 2000;
-
 const socket = io.connect(`http://localhost:8080/`);
 let down1 = false;
 let down2 = false;
 let down3 = false;
 let down4 = false;
-
+let TOPBARHEIGHT, CENTERFIELD;
 let restart = false;
+
+let redScore = 0;
+const blueScore = 0;
+
+
 socket.on(`start`, message => {
   restart = message;
 });
@@ -54,160 +52,85 @@ socket.on(`update`, message => {
 
 export default class Play extends Phaser.State {
   create() {
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.lives = 3;
+    TOPBARHEIGHT = this.game.height / 6;
+    CENTERFIELD = this.game.height / 2 + TOPBARHEIGHT / 2;
 
+    this.cursors = this.input.keyboard.createCursorKeys();
     this.createBackground();
-    this.createSounds();
-    this.makeExplosives();
-    this.makePlatforms();
-    this.makeStartPlatforms();
-    this.makePlayer();
-    this.makeLives();
+    this.createPlayer();
     this.createScore();
   }
   createBackground() {
-    this.stage.backgroundColor = `c6eefa`;
-    this.sea = this.add.tileSprite(0, this.game.height - 70, this.game.width, 70, `tiles`, `liquidWaterTop_mid.png`);
-    this.sea.autoScroll(- BACKGROUND_SPEED, 0);
-  }
-  createSounds() {
-    this.jumpSound = this.add.audio(`jumpSound`);
-    this.explodeSound = this.add.audio(`explodeSound`);
-  }
-  makePlatforms() {
-    this.platforms = this.add.group();
-    this.platforms.physicsBodyType = Phaser.Physics.ARCADE;
-    this.platforms.enableBody = true;
-    this.platforms.createMultiple(20, `tiles`, [
-      `grassLeft.png`,
-      `grassMid.png`,
-      `grassRight.png`
-    ]);
-    this.platforms.setAll(`anchor.x`, 0.5);
-    this.platforms.setAll(`anchor.y`, 0.5);
-    //this.platforms.setAll('outOfBoundsKill', true);
-    this.platforms.setAll(`checkWorldBounds`, true);
+    this.stage.backgroundColor = `5151E5`;
+    const graphics = this.game.add.graphics(0, 0);
+    // Linker rood vak
+    graphics.beginFill(0xBD3B49);
+    graphics.drawRect(0, 0, this.game.width / 2, this.game.height);
+    //Boveste grijze balk
+    graphics.beginFill(0xE7E8E8);
+    graphics.drawRect(0, 0, this.game.width, TOPBARHEIGHT);
+    //Linkse score box
+    graphics.beginFill(0xD5D6DA);
+    graphics.drawRect(0, 0, TOPBARHEIGHT, TOPBARHEIGHT);
+    //Rechste score box
+    graphics.drawRect(this.game.width - TOPBARHEIGHT, 0, TOPBARHEIGHT, TOPBARHEIGHT);
+    //Middellijn
+    graphics.beginFill(0xE7E8E8);
+    graphics.drawRect((this.game.width / 2) - 2, TOPBARHEIGHT, 4, this.game.height);
 
-    this.platformTimer = this.time.events.loop(ENEMY_INTERVAL, this.makeNewPlatform, this);
-  }
-  makeStartPlatforms() {
-    for (let i = 0;i < 4;i ++) {
-      this.makePlatform(i * 210, 400);
+    //Horizon lijn
+    graphics.drawRect(0, CENTERFIELD, this.game.width, 2);
+
+    //Afstand lijnen
+    const lijnHeight = 30;
+    const lijnStartY = CENTERFIELD - (lijnHeight / 2);
+    const numberOfLines = 12;
+    const stepWitdh = this.game.width / numberOfLines;
+    for (let i = 0;i < numberOfLines;i ++) {
+      graphics.drawRect(stepWitdh * i + (stepWitdh / 2), lijnStartY, 2, lijnHeight);
     }
+
+    //Middentekst
+    const style = {font: `bold 30px Avenir`, fill: `#99A5A7`, boundsAlignH: `center`, boundsAlignV: `middle`};
+    const text  = this.game.add.text(0, 0, `HELP DE CHEF NAAR JOUW KANT`, style);
+    text.setTextBounds(0, 0, this.game.width, TOPBARHEIGHT);
   }
-  makePlatform(x, y) {
-    for (let i = 1;i < 4;i ++) {
-      const platform = this.platforms.getFirstExists(false);
-      if (!platform) {
-        return;
-      }
-      platform.body.immovable = true;
-      platform.reset(x + (i * 70), y);
-      platform.body.velocity.set(- PLATFORM_SPEED, 0);
-    }
+
+  createPlayer() {
+    this.game.add.sprite(this.game.width / 2 - 110, CENTERFIELD - 150, `player`);
   }
-  makeExplosives() {
-    this.explosives = this.add.group();
-    this.explosives.enableBody = true;
-    this.explosives.physicsBodyType = Phaser.Physics.ARCADE;
-    this.explosives.createMultiple(20, `tiles`, `boxExplosive.png`);
-    this.explosives.setAll(`anchor.x`, 0.5);
-    this.explosives.setAll(`anchor.y`, 0.5);
-    this.explosives.setAll(`checkWorldBounds`, true);
-  }
-  makeExplosive(x, y) {
-    const explosive = this.explosives.getFirstExists(false);
-    explosive.body.immovable = true;
-    this.position = this.rnd.integerInRange(0, 1);
-    if (this.position === 0) {
-      explosive.reset(x + 70, y - 70);
-    } else {
-      explosive.reset(x + 210, y - 70);
-    }
-    explosive.body.velocity.set(- PLATFORM_SPEED, 0);
-  }
-  makeNewPlatform() {
-    const yPos = this.rnd.integerInRange(200, this.game.height - 100);
-    this.makePlatform(this.game.width, yPos);
-    this.makeExplosive(this.game.width, yPos);
-  }
-  makePlayer() {
-    this.player = new Player(this.game, 140, 140);
-    this.add.existing(this.player);
-  }
-  makeLives() {
-    this.totalHearts = 3;
-    this.counter = this.lives;
-    for (let i = 0;i < this.totalHearts;i ++) {
-      if (this.counter > 0) {
-        this.heartStatus = `hud_heartFull.png`;
-      } else {
-        this.heartStatus = `hud_heartEmpty.png`;
-      }
-      this.heart = this.add.sprite(this.game.width - 60 - (i * 70), 10, `tiles`, this.heartStatus);
-      this.counter--;
-    }
-  }
+
   createScore() {
-    this.scoreText = this.add.text(
-      100, 10, `Score: ${  this.points}`,
-      {
-        font: `20px KenFuture`
-      }
-    );
+    const style = {font: `bold 50px Avenir`, fill: `#E34C71`, boundsAlignH: `center`, boundsAlignV: `middle`};
+
+    const redScoreText  = this.game.add.text(0, 0, `${redScore}`, style);
+    redScoreText.setTextBounds(0, 0, TOPBARHEIGHT, TOPBARHEIGHT);
+
+    const blueScoreText  = this.game.add.text(this.game.width - TOPBARHEIGHT, 0, `${blueScore}`, style);
+    blueScoreText.setTextBounds(0, 0, TOPBARHEIGHT, TOPBARHEIGHT);
   }
   update() {
-    this.physics.arcade.collide(this.player, this.platforms);
-    this.inputHandler();
-    this.checkCollisions();
   }
 
   inputHandler() {
-    this.player.body.velocity.x = 0;
-    if (down2 === true || down4 === true) {
-      this.player.body.velocity.x = - 100;
-      this.player.animations.play(`walk`);
+    if (down1 === true) {
       console.log(`left`);
+      redScore += 1;
     }
-    if (down1 === true || down3 === true) {
-      this.player.body.velocity.x = 100;
-      this.player.animations.play(`walk`);
+    if (down2 === true) {
+      console.log(`left`);
+      redScore += 2;
+    }
+    if (down3 === true) {
       console.log(`right`);
+      redScore += 3;
+    }
+    if (down4 === true) {
+      console.log(`right`);
+      redScore += 4;
     }
     if (restart) {
       this.state.start(`Play`);
-    }
-  }
-  checkCollisions() {
-    this.physics.arcade.overlap(this.player, this.explosives, this.explosiveHit, null, this);
-    if (this.player.y > this.game.height) {
-      this.killPlayer();
-    }
-  }
-  killPlayer() {
-    this.sea.autoScroll(0, 0);
-    this.platforms.forEach(platform => {
-      platform.body.velocity.set(0, 0);
-    });
-    this.explosives.forEach(explosive => {
-      explosive.body.velocity.set(0, 0);
-    });
-    const button = new Button(this.game, this.world.centerX, this.world.centerY, this.buttonClicked, this, `blue`, `Again`);
-    button.anchor.setTo(0.5, 0.5);
-    this.add.existing(button);
-  }
-  buttonClicked() {
-    this.state.start(`Menu`);
-  }
-  explosiveHit(player, explosive) {
-    explosive.kill();
-    this.lives--;
-    this.makeLives();
-    this.explodeSound.play();
-
-    if (this.lives === 0) {
-      this.killPlayer();
     }
   }
 }
