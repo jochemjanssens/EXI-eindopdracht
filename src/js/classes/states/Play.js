@@ -3,7 +3,10 @@ let down1 = false;
 let down2 = false;
 let down3 = false;
 let down4 = false;
+
 let TOPBARHEIGHT, CENTERFIELD;
+const FOODSPEED = 200;
+const CHEFSTEP = 200;
 
 let redScore = 0;
 let blueScore = 0;
@@ -97,8 +100,10 @@ export default class Play extends Phaser.State {
   }
 
   createPlayer() {
-    this.chef = this.game.add.sprite(this.game.width / 2 - 110, CENTERFIELD - 150, `player`);
+    this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
     this.game.physics.enable(this.chef, Phaser.Physics.ARCADE);
+    this.chef.anchor.x = 0.5;
+    this.chef.anchor.y = 0.5;
   }
 
   createScore() {
@@ -112,57 +117,85 @@ export default class Play extends Phaser.State {
   }
 
   createFood() {
-    this.food = this.add.group();
-    this.food.enableBody = true;
-    this.food.createMultiple(4, `apple`);
-    this.food.setAll(`anchor.x`, 0.5);
-    this.food.setAll(`anchor.y`, 0.5);
+    this.apples = this.add.group();
+    this.apples.enableBody = true;
+    this.apples.createMultiple(4, `apple`);
+    this.apples.setAll(`anchor.x`, 0.5);
+    this.apples.setAll(`anchor.y`, 0.5);
+
+    this.bananas = this.add.group();
+    this.bananas.enableBody = true;
+    this.bananas.createMultiple(4, `banana`);
+    this.bananas.setAll(`anchor.x`, 0.5);
+    this.bananas.setAll(`anchor.y`, 0.5);
+
+    this.pears = this.add.group();
+    this.pears.enableBody = true;
+    this.pears.createMultiple(4, `pear`);
+    this.pears.setAll(`anchor.x`, 0.5);
+    this.pears.setAll(`anchor.y`, 0.5);
+
+    this.cherries = this.add.group();
+    this.cherries.enableBody = true;
+    this.cherries.createMultiple(4, `cherry`);
+    this.cherries.setAll(`anchor.x`, 0.5);
+    this.cherries.setAll(`anchor.y`, 0.5);
   }
 
   update() {
-    this.chef.body.velocity.x = 0;
-    this.physics.arcade.overlap(this.chef, this.food, this.foodHit, null, this);
+    this.chef.body.velocity.x -= this.chef.body.velocity.x / 10;
+    this.physics.arcade.overlap(this.chef, this.apples, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.bananas, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.pears, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.cherries, this.foodHit, null, this);
+
     this.inputHandler();
   }
 
   inputHandler() {
     if (down1 === true) {
       down1 = false;
-      this.handleScore(`red`, 2);
+      this.throwFood(`red`, 2);
     }
     if (down2 === true) {
       down2 = false;
-      this.handleScore(`red`, 3);
+      this.throwFood(`red`, 3);
     }
     if (down3 === true) {
       down3 = false;
-      this.handleScore(`red`, 4);
+      this.throwFood(`red`, 4);
     }
     if (down4 === true) {
       down4 = false;
-      this.handleScore(`red`, 1);
+      this.throwFood(`red`, 1);
     }
-  }
-
-  handleScore(team, points) {
-    this.throwFood(team, points);
   }
 
   throwFood(team, points) {
     const position = Math.round(Math.random() * 4);
     const step = (this.game.height - TOPBARHEIGHT) / 4;
     const yPos = TOPBARHEIGHT + (step * position) + (step / 2);
-    const fooditem = this.food.getFirstDead(false);
+    let fooditem;
+    console.log(points);
+    if (points === 1) {
+      fooditem = this.apples.getFirstDead(false);
+    } else if (points === 2) {
+      fooditem = this.bananas.getFirstDead(false);
+    } else if (points === 3) {
+      fooditem = this.pears.getFirstDead(false);
+    } else if (points === 4) {
+      fooditem = this.cherries.getFirstDead(false);
+    }
     if (!fooditem) {
       return;
     }
     if (team === `red`) {
       fooditem.reset(0, yPos);
-      fooditem.body.velocity.x = 100;
+      fooditem.body.velocity.x = FOODSPEED;
       fooditem.body.velocity.y = this.calculateFoodPath(0, yPos);
     } else if (team === `blue`) {
       fooditem.reset(this.game.width, yPos);
-      fooditem.body.velocity.x = - 100;
+      fooditem.body.velocity.x = - FOODSPEED;
       fooditem.body.velocity.y = this.calculateFoodPath(this.game.width, yPos);
     }
     fooditem.data = {
@@ -173,7 +206,7 @@ export default class Play extends Phaser.State {
   calculateFoodPath(xPos, yPos) {
     const xDistance = this.chef.body.x;
     const yDistance = CENTERFIELD - yPos;
-    const yChange = (yDistance / xDistance) * 100;
+    const yChange = (yDistance / xDistance) * FOODSPEED;
     return yChange;
   }
 
@@ -193,9 +226,11 @@ export default class Play extends Phaser.State {
 
     //Beweeg de chef
     if (fooditem.data.team === `red`) {
-      this.chef.body.velocity.x = - (fooditem.data.points * 1000);
+      this.chef.body.velocity.x = - (fooditem.data.points * CHEFSTEP);
+      this.chef.scale.setTo(- 1, 1);
     } else if (fooditem.data.team === `blue`) {
-      this.chef.body.velocity.x = fooditem.data.points * 1000;
+      this.chef.body.velocity.x = fooditem.data.points * CHEFSTEP;
+      this.chef.scale.setTo(1, 1);
     }
 
     fooditem.kill();
