@@ -8,7 +8,7 @@ let TOPBARHEIGHT, CENTERFIELD;
 let redScore = 0;
 let blueScore = 0;
 
-let redScoreText, blueScoreText, chef;
+let redScoreText, blueScoreText;
 
 socket.on(`update`, message => {
   if (Object.keys(message)[0] === `one`) {
@@ -55,7 +55,10 @@ export default class Play extends Phaser.State {
     this.createBackground();
     this.createPlayer();
     this.createScore();
+
+    this.createFood();
   }
+
   createBackground() {
     this.stage.backgroundColor = `5151E5`;
     const graphics = this.game.add.graphics(0, 0);
@@ -93,9 +96,8 @@ export default class Play extends Phaser.State {
   }
 
   createPlayer() {
-    chef = this.game.add.sprite(this.game.width / 2 - 110, CENTERFIELD - 150, `player`);
-    this.game.physics.enable(chef, Phaser.Physics.ARCADE);
-
+    this.chef = this.game.add.sprite(this.game.width / 2 - 110, CENTERFIELD - 150, `player`);
+    this.game.physics.enable(this.chef, Phaser.Physics.ARCADE);
   }
 
   createScore() {
@@ -107,32 +109,67 @@ export default class Play extends Phaser.State {
     blueScoreText  = this.game.add.text(this.game.width - TOPBARHEIGHT, 0, `${blueScore}`, style);
     blueScoreText.setTextBounds(0, 0, TOPBARHEIGHT, TOPBARHEIGHT);
   }
+
+  createFood() {
+    this.food = this.add.group();
+    this.food.enableBody = true;
+    this.food.createMultiple(4, `apple`);
+    this.food.setAll(`anchor.x`, 0.5);
+    this.food.setAll(`anchor.y`, 0.5);
+  }
+
   update() {
+    this.physics.arcade.overlap(this.chef, this.food, this.foodHit, null, this);
     this.inputHandler();
   }
 
   inputHandler() {
-    chef.body.velocity.x = 0;
+    this.chef.body.velocity.x = 0;
     if (down1 === true) {
       down1 = false;
-      this.updateScore(`red`, 2);
-      chef.body.velocity.x = 2000;
+      this.handleScore(`red`, 2);
+      this.chef.body.velocity.x = - 2000;
     }
     if (down2 === true) {
       down2 = false;
-      this.updateScore(`red`, 3);
-      chef.body.velocity.x = 3000;
+      this.handleScore(`red`, 3);
+      this.chef.body.velocity.x = - 3000;
     }
     if (down3 === true) {
       down3 = false;
-      this.updateScore(`red`, 4);
-      chef.body.velocity.x = 4000;
+      this.handleScore(`red`, 4);
+      this.chef.body.velocity.x = - 4000;
     }
     if (down4 === true) {
       down4 = false;
-      this.updateScore(`red`, 1);
-      chef.body.velocity.x = 1000;
+      this.handleScore(`red`, 1);
+      this.chef.body.velocity.x = - 1000;
     }
+  }
+
+  handleScore(team, points) {
+    this.throwFood();
+    this.updateScore(team, points);
+  }
+
+  throwFood() {
+    const position = Math.round(Math.random() * 4);
+    const step = (this.game.height - TOPBARHEIGHT) / 4;
+    const yPos = TOPBARHEIGHT + (step * position) + (step / 2);
+    const fooditem = this.food.getFirstDead(false);
+    if (!fooditem) {
+      return;
+    }
+    fooditem.reset(0, yPos);
+    fooditem.body.velocity.x = 100;
+    fooditem.body.velocity.y = this.calculateFoodPath(0, yPos);
+  }
+
+  calculateFoodPath(xPos, yPos) {
+    const xDistance = this.chef.body.x;
+    const yDistance = CENTERFIELD - yPos;
+    const yChange = (yDistance / xDistance) * 100;
+    return yChange;
   }
 
   updateScore(team, points) {
@@ -144,5 +181,10 @@ export default class Play extends Phaser.State {
       blueScore += points;
       blueScore.setText(redScore);
     }
+  }
+
+  foodHit(player, fooditem) {
+    fooditem.kill();
+    console.log(`hit`);
   }
 }
