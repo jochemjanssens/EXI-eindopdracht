@@ -48,14 +48,15 @@ socket.on(`update`, message => {
 
 export default class Play extends Phaser.State {
   create() {
+    //Bereken enkele variabelen
     TOPBARHEIGHT = this.game.height / 6;
     CENTERFIELD = this.game.height / 2 + TOPBARHEIGHT / 2;
 
     this.cursors = this.input.keyboard.createCursorKeys();
+
     this.createBackground();
     this.createPlayer();
     this.createScore();
-
     this.createFood();
   }
 
@@ -119,40 +120,35 @@ export default class Play extends Phaser.State {
   }
 
   update() {
+    this.chef.body.velocity.x = 0;
     this.physics.arcade.overlap(this.chef, this.food, this.foodHit, null, this);
     this.inputHandler();
   }
 
   inputHandler() {
-    this.chef.body.velocity.x = 0;
     if (down1 === true) {
       down1 = false;
       this.handleScore(`red`, 2);
-      this.chef.body.velocity.x = - 2000;
     }
     if (down2 === true) {
       down2 = false;
       this.handleScore(`red`, 3);
-      this.chef.body.velocity.x = - 3000;
     }
     if (down3 === true) {
       down3 = false;
       this.handleScore(`red`, 4);
-      this.chef.body.velocity.x = - 4000;
     }
     if (down4 === true) {
       down4 = false;
       this.handleScore(`red`, 1);
-      this.chef.body.velocity.x = - 1000;
     }
   }
 
   handleScore(team, points) {
-    this.throwFood();
-    this.updateScore(team, points);
+    this.throwFood(team, points);
   }
 
-  throwFood() {
+  throwFood(team, points) {
     const position = Math.round(Math.random() * 4);
     const step = (this.game.height - TOPBARHEIGHT) / 4;
     const yPos = TOPBARHEIGHT + (step * position) + (step / 2);
@@ -160,9 +156,18 @@ export default class Play extends Phaser.State {
     if (!fooditem) {
       return;
     }
-    fooditem.reset(0, yPos);
-    fooditem.body.velocity.x = 100;
-    fooditem.body.velocity.y = this.calculateFoodPath(0, yPos);
+    if (team === `red`) {
+      fooditem.reset(0, yPos);
+      fooditem.body.velocity.x = 100;
+      fooditem.body.velocity.y = this.calculateFoodPath(0, yPos);
+    } else if (team === `blue`) {
+      fooditem.reset(this.game.width, yPos);
+      fooditem.body.velocity.x = - 100;
+      fooditem.body.velocity.y = this.calculateFoodPath(this.game.width, yPos);
+    }
+    fooditem.data = {
+      team, points
+    };
   }
 
   calculateFoodPath(xPos, yPos) {
@@ -184,7 +189,15 @@ export default class Play extends Phaser.State {
   }
 
   foodHit(player, fooditem) {
+    this.updateScore(fooditem.data.team, fooditem.data.points);
+
+    //Beweeg de chef
+    if (fooditem.data.team === `red`) {
+      this.chef.body.velocity.x = - (fooditem.data.points * 1000);
+    } else if (fooditem.data.team === `blue`) {
+      this.chef.body.velocity.x = fooditem.data.points * 1000;
+    }
+
     fooditem.kill();
-    console.log(`hit`);
   }
 }
