@@ -3,6 +3,10 @@ let down1 = false;
 let down2 = false;
 let down3 = false;
 let down4 = false;
+let down5 = false;
+let down6 = false;
+let down7 = false;
+let down8 = false;
 
 let TOPBARHEIGHT, CENTERFIELD;
 const FOODSPEED = 200;
@@ -13,11 +17,11 @@ let blueScore = 0;
 
 let redScoreText, blueScoreText;
 
-socket.on(`update`, message => {
+socket.on(`updateA`, message => {
   if (Object.keys(message)[0] === `one`) {
     if (message.one === true) {
       down1 = true;
-      console.log(`1`);
+      console.log(`red 1`);
     } else {
       down1 = false;
     }
@@ -25,7 +29,7 @@ socket.on(`update`, message => {
   if (Object.keys(message)[0] === `two`) {
     if (message.two === true) {
       down2 = true;
-      console.log(`2`);
+      console.log(`red 2`);
     } else {
       down2 = false;
     }
@@ -33,7 +37,7 @@ socket.on(`update`, message => {
   if (Object.keys(message)[0] === `three`) {
     if (message.three === true) {
       down3 = true;
-      console.log(`3`);
+      console.log(`red 3`);
     } else {
       down3 = false;
     }
@@ -41,9 +45,44 @@ socket.on(`update`, message => {
   if (Object.keys(message)[0] === `four`) {
     if (message.four === true) {
       down4 = true;
-      console.log(`4`);
+      console.log(`red 4`);
     } else {
       down4 = false;
+    }
+  }
+});
+
+socket.on(`updateB`, message => {
+  if (Object.keys(message)[0] === `one`) {
+    if (message.one === true) {
+      down5 = true;
+      console.log(`blue 1`);
+    } else {
+      down5 = false;
+    }
+  }
+  if (Object.keys(message)[0] === `two`) {
+    if (message.two === true) {
+      down6 = true;
+      console.log(`blue 2`);
+    } else {
+      down6 = false;
+    }
+  }
+  if (Object.keys(message)[0] === `three`) {
+    if (message.three === true) {
+      down7 = true;
+      console.log(`blue 3`);
+    } else {
+      down7 = false;
+    }
+  }
+  if (Object.keys(message)[0] === `four`) {
+    if (message.four === true) {
+      down8 = true;
+      console.log(`blue 4`);
+    } else {
+      down8 = false;
     }
   }
 });
@@ -169,9 +208,26 @@ export default class Play extends Phaser.State {
       down4 = false;
       this.throwFood(`red`, 1);
     }
+    if (down5 === true) {
+      down5 = false;
+      this.throwFood(`blue`, 2);
+    }
+    if (down6 === true) {
+      down6 = false;
+      this.throwFood(`blue`, 3);
+    }
+    if (down7 === true) {
+      down7 = false;
+      this.throwFood(`blue`, 4);
+    }
+    if (down8 === true) {
+      down8 = false;
+      this.throwFood(`blue`, 1);
+    }
   }
 
   throwFood(team, points) {
+    console.log(team, points);
     const position = Math.round(Math.random() * 4);
     const step = (this.game.height - TOPBARHEIGHT) / 4;
     const yPos = TOPBARHEIGHT + (step * position) + (step / 2);
@@ -217,7 +273,7 @@ export default class Play extends Phaser.State {
     }
     if (team === `blue`) {
       blueScore += points;
-      blueScore.setText(redScore);
+      blueScoreText.setText(blueScore);
     }
   }
 
