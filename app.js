@@ -32,6 +32,8 @@ server.register(inert, err => {
 
 const five = require(`johnny-five`);
 
+const SCOREMARGIN = 10;
+
 new five.Boards([ "A", "B" ]).on("ready", function() {
 
   // Both "A" and "B" are initialized
@@ -66,6 +68,10 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
       pin: 11,
       board: board
     });
+    const laser2 = new five.Led({
+      pin: 10,
+      board: board
+    });
     let laserOn = false;
 
     let raak1 = false;
@@ -75,11 +81,11 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
         base1 = this.value;
         console.log(`${board.id} 1: ${base1}`);
       }
-      if (this.value > base1-100 && raak1 === false && laserOn === true) {
+      if (this.value > base1-SCOREMARGIN && raak1 === false && laserOn === true) {
         console.log(`${board.id} raak1`);
         io.sockets.emit(`update${board.id}`, {"one": true});
         raak1 = true;
-      } else if(this.value < base1-100 && raak1 === true)  {
+      } else if(this.value < base1-SCOREMARGIN && raak1 === true)  {
         io.sockets.emit(`update${board.id}`, {"one": false});
 
         raak1 = false;
@@ -94,11 +100,11 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
         console.log(`${board.id} 2: ${base2}`);
         checkLaser();
       }
-      if (this.value > base2-100 && raak2 === false && laserOn === true) {
+      if (this.value > base2-SCOREMARGIN && raak2 === false && laserOn === true) {
         console.log(`${board.id} raak2`);
         io.sockets.emit(`update${board.id}`, {"two": true});
         raak2 = true;
-      } else if(this.value < base2-100 && raak2 === true)  {
+      } else if(this.value < base2-SCOREMARGIN && raak2 === true)  {
         io.sockets.emit(`update${board.id}`, {"two": false});
 
         raak2 = false;
@@ -112,11 +118,11 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
         console.log(`${board.id} 3: ${base3}`);
         checkLaser();
       }
-      if (this.value > base3-100 && raak3 === false && laserOn === true) {
+      if (this.value > base3-SCOREMARGIN && raak3 === false && laserOn === true) {
         console.log(`${board.id} raak3`);
         io.sockets.emit(`update${board.id}`, {"three": true});
         raak3 = true;
-      } else if(this.value < base3-100 && raak3 === true)  {
+      } else if(this.value < base3-SCOREMARGIN && raak3 === true)  {
         io.sockets.emit(`update${board.id}`, {"three": false});
 
         raak3 = false;
@@ -130,11 +136,11 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
         console.log(`${board.id} 4: ${base4}`);
         checkLaser();
       }
-      if (this.value > base4-100 && raak4 === false && laserOn === true) {
+      if (this.value > base4-SCOREMARGIN && raak4 === false && laserOn === true) {
         console.log(`${board.id} raak4`);
         io.sockets.emit(`update${board.id}`, {"four": true});
         raak4 = true;
-      } else if(this.value < base4-100 && raak4 === true)  {
+      } else if(this.value < base4-SCOREMARGIN && raak4 === true)  {
         io.sockets.emit(`update${board.id}`, {"four": false});
 
         raak4 = false;
@@ -145,6 +151,7 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
       if(base1 !== false && base2 !== false && base3 !== false && base4 !== false){
         console.log(`${board.id} laseractive`);
         laser.on();
+        laser2.on();
         laserOn = true;
       }
     }

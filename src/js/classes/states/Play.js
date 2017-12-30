@@ -260,7 +260,7 @@ export default class Play extends Phaser.State {
   }
 
   calculateFoodPath(xPos, yPos) {
-    const xDistance = this.chef.body.x;
+    const xDistance = Math.abs(xPos - this.chef.body.x);
     const yDistance = CENTERFIELD - yPos;
     const yChange = (yDistance / xDistance) * FOODSPEED;
     return yChange;
