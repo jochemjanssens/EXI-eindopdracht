@@ -1,0 +1,52 @@
+{"frames": [
+
+{
+	"filename": "sprite_1.png",
+	"frame": {"x":342,"y":1,"w":119,"h":105},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":119,"h":105},
+	"sourceSize": {"w":119,"h":105}
+},
+{
+	"filename": "sprite_2.png",
+	"frame": {"x":110,"y":1,"w":114,"h":107},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":114,"h":107},
+	"sourceSize": {"w":114,"h":107}
+},
+{
+	"filename": "sprite_3.png",
+	"frame": {"x":1,"y":1,"w":107,"h":108},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":107,"h":108},
+	"sourceSize": {"w":107,"h":108}
+},
+{
+	"filename": "sprite_4.png",
+	"frame": {"x":226,"y":1,"w":114,"h":107},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":114,"h":107},
+	"sourceSize": {"w":114,"h":107}
+},
+{
+	"filename": "sprite_5.png",
+	"frame": {"x":463,"y":1,"w":119,"h":104},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":119,"h":104},
+	"sourceSize": {"w":119,"h":104}
+}],
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "guy1.png",
+	"format": "RGBA8888",
+	"size": {"w":583,"h":110},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:526e6b75c01b195efcaa3f2f28bdfd55:fa883a21998acdb20f91ca3f8863b4fd:1d5de7b977eb481679c1875c3454f2eb$"
+}
+}

@@ -100,6 +100,7 @@ export default class Play extends Phaser.State {
     this.createPlayer();
     this.createScore();
     this.createFood();
+
   }
 
   createBackground() {
@@ -136,7 +137,14 @@ export default class Play extends Phaser.State {
     const style = {font: `bold 30px Avenir`, fill: `#99A5A7`, boundsAlignH: `center`, boundsAlignV: `middle`};
     const text  = this.game.add.text(0, 0, `HELP DE CHEF NAAR JOUW KANT`, style);
     text.setTextBounds(0, 0, this.game.width, TOPBARHEIGHT);
+
+    //finish
+    this.finish = this.game.add.sprite(0, TOPBARHEIGHT, `finish`);
+    this.finish = this.game.add.sprite(this.game.width - 45, TOPBARHEIGHT, `finish`);
+
   }
+
+
 
   createPlayer() {
     this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
@@ -189,6 +197,12 @@ export default class Play extends Phaser.State {
     this.physics.arcade.overlap(this.chef, this.cherries, this.foodHit, null, this);
 
     this.inputHandler();
+
+    if (this.chef.position.x <= 45) {
+      this.state.start(`Win`);
+    } else if (this.chef.position.x >= this.game.width - 45) {
+      this.state.start(`Win`);
+    }
   }
 
   inputHandler() {
