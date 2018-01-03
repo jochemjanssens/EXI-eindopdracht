@@ -100,7 +100,7 @@ export default class Play extends Phaser.State {
     this.createPlayer();
     this.createScore();
     this.createFood();
-
+    this.createRedTeam();
   }
 
   createBackground() {
@@ -144,7 +144,23 @@ export default class Play extends Phaser.State {
 
   }
 
+  createRedTeam() {
+    this.guy1 = this.add.sprite(- 20, 150, `guy1`);
+    this.guy1.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 10, true, false);
+    this.guy1.animations.play(`walk`);
 
+    this.guy2 = this.add.sprite(- 20, 300, `guy1`);
+    this.guy2.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 11, true, false);
+    this.guy2.animations.play(`walk`);
+
+    this.guy3 = this.add.sprite(- 20, 500, `guy1`);
+    this.guy3.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 12, true, false);
+    this.guy3.animations.play(`walk`);
+
+    this.guy4 = this.add.sprite(- 20, 650, `guy1`);
+    this.guy4.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 13, true, false);
+    this.guy4.animations.play(`walk`);
+  }
 
   createPlayer() {
     this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
