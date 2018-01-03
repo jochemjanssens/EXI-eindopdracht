@@ -11,18 +11,27 @@ socket.on(`start`, message => {
   play = message;
 });
 
-export default class Menu extends Phaser.State {
+let winner, winScore;
+
+export default class Win extends Phaser.State {
+  init(newWinner, newWinScore) {
+    winner = newWinner;
+    winScore = newWinScore;
+  }
   create() {
     this.createBackground();
 
   }
   createBackground() {
     const graphics = this.game.add.graphics(0, 0);
-
-    this.stage.backgroundColor = `BB3D4B`;
+    if (winner === `ROOD`) {
+      this.stage.backgroundColor = `BB3D4B`;
+    } else {
+      this.stage.backgroundColor = `5151E5`;
+    }
 
     const styleWinner = {font: `bold 40px Avenir`, fill: `#99A5A7`, boundsAlignH: `center`, boundsAlignV: `middle`};
-    const textSmall  = this.game.add.text(0, 0, `TEAM ROOD WINT !`, styleWinner);
+    const textSmall  = this.game.add.text(0, 0, `TEAM ${winner} WINT !`, styleWinner);
     textSmall.setTextBounds(0, 0, this.game.width, 140);
 
     const styleScoreTitle = {font: `bold 40px Avenir`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`};
@@ -30,7 +39,7 @@ export default class Menu extends Phaser.State {
     textScoreTitle.setTextBounds(0, 0, this.game.width, 700);
 
     const styleScore = {font: `bold 60px Avenir`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`};
-    const textScore  = this.game.add.text(0, 0, `17`, styleScore);
+    const textScore  = this.game.add.text(0, 0, winScore, styleScore);
     textScore.setTextBounds(0, 0, this.game.width, 850);
 
     const styleOpnieuw = {font: `bold 30px Avenir`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`};

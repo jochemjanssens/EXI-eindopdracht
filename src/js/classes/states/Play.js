@@ -199,9 +199,9 @@ export default class Play extends Phaser.State {
     this.inputHandler();
 
     if (this.chef.position.x <= 45) {
-      this.state.start(`Win`);
+      this.state.start(`Win`, true, false, `ROOD`, redScore);
     } else if (this.chef.position.x >= this.game.width - 45) {
-      this.state.start(`Win`);
+      this.state.start(`Win`, true, false, `BLAUW`, blueScore);
     }
   }
 
