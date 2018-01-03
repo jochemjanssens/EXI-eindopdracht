@@ -163,7 +163,8 @@ export default class Play extends Phaser.State {
   }
 
   createPlayer() {
-    this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
+    //this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
+    this.chef = this.game.add.sprite(0, CENTERFIELD - 40, `player`);
     this.game.physics.enable(this.chef, Phaser.Physics.ARCADE);
     this.chef.anchor.x = 0.5;
     this.chef.anchor.y = 0.5;
@@ -215,9 +216,9 @@ export default class Play extends Phaser.State {
     this.inputHandler();
 
     if (this.chef.position.x <= 45) {
-      this.state.start(`Win`);
+      this.state.start(`Win`, true, false, `ROOD`, redScore);
     } else if (this.chef.position.x >= this.game.width - 45) {
-      this.state.start(`Win`);
+      this.state.start(`Win`, true, false, `BLAUW`, blueScore);
     }
   }
 
