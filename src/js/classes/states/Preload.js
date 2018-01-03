@@ -12,7 +12,7 @@ export default class Preload extends Phaser.State {
     this.load.image(`finish`, `assets/finish.png`);
   }
   create() {
-    this.state.start(`Win`);
+    this.state.start(`Menu`);
     console.log(`game klaar`);
   }
 }

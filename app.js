@@ -64,6 +64,17 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
       freq: 1
     });
 
+    const button = new five.Button(8);
+
+    button.on("down", function() {
+      console.log("body");
+     io.sockets.emit(`start`, true);
+    });
+
+    button.on("up", function() {
+      io.sockets.emit(`start`, false);
+    });
+
     const laser = new five.Led({
       pin: 11,
       board: board

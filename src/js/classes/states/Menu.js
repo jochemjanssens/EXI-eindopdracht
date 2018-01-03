@@ -4,6 +4,7 @@ let TOPBARHEIGHT;
 const socket = io.connect(`http://localhost:8080/`);
 let play = false;
 socket.on(`start`, message => {
+  console.log(message);
   play = message;
 });
 
