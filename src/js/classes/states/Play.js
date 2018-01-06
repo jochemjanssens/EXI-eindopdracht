@@ -101,6 +101,7 @@ export default class Play extends Phaser.State {
     this.createScore();
     this.createFood();
     this.createRedTeam();
+    this.createBlueTeam();
   }
 
   createBackground() {
@@ -120,6 +121,8 @@ export default class Play extends Phaser.State {
     //Middellijn
     graphics.beginFill(0xE7E8E8);
     graphics.drawRect((this.game.width / 2) - 2, TOPBARHEIGHT, 4, this.game.height);
+
+    //this.bgEffect = this.game.add.sprite(30,  TOPBARHEIGHT, `bg-effect`);
 
     //Horizon lijn
     graphics.drawRect(0, CENTERFIELD, this.game.width, 2);
@@ -145,26 +148,43 @@ export default class Play extends Phaser.State {
   }
 
   createRedTeam() {
-    this.guy1 = this.add.sprite(- 20, 150, `guy1`);
-    this.guy1.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 10, true, false);
-    this.guy1.animations.play(`walk`);
+    const dataTeamRed = [
+      [1, 150, 10],
+      [2, 300, 11],
+      [3, 500, 12],
+      [4, 650, 13]
+    ];
 
-    this.guy2 = this.add.sprite(- 20, 300, `guy1`);
-    this.guy2.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 11, true, false);
-    this.guy2.animations.play(`walk`);
+    for (let i = 0;i < dataTeamRed.length;i ++) {
+      const guy = this.add.sprite(- 20, dataTeamRed[i][1], `guy${dataTeamRed[i][0]}`);
+      guy.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), dataTeamRed[i][2], true, false);
+      guy.animations.play(`walk`);
+    }
+  }
 
-    this.guy3 = this.add.sprite(- 20, 500, `guy1`);
-    this.guy3.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 12, true, false);
-    this.guy3.animations.play(`walk`);
+  createBlueTeam() {
+    const dataTeamBlue = [
+      [1, 150, 10],
+      [2, 300, 11],
+      [3, 500, 12],
+      [4, 650, 13]
+    ];
 
-    this.guy4 = this.add.sprite(- 20, 650, `guy1`);
-    this.guy4.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), 13, true, false);
-    this.guy4.animations.play(`walk`);
+    for (let i = 0;i < dataTeamBlue.length;i ++) {
+      const guy = this.add.sprite(this.game.width - 90, dataTeamBlue[i][1], `blue${dataTeamBlue[i][0]}`);
+      guy.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 13, `.png`), dataTeamBlue[i][2], true, false);
+      guy.animations.play(`walk`);
+    }
+
+    // this.blue = this.add.sprite(this.game.width / 3, 150, `blue1`);
+    // this.blue.animations.add(`walk`, Phaser.Animation.generateFrameNames(``, 1, 15, `.png`), 15, true, false);
+    // this.blue.animations.play(`walk`);
+    // console.log(this.blue);
   }
 
   createPlayer() {
     //this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
-    this.chef = this.game.add.sprite(0, CENTERFIELD - 40, `player`);
+    this.chef = this.game.add.sprite(this.game.width / 2 - 30, CENTERFIELD - 40, `player`);
     this.game.physics.enable(this.chef, Phaser.Physics.ARCADE);
     this.chef.anchor.x = 0.5;
     this.chef.anchor.y = 0.5;
