@@ -1,4 +1,3 @@
-import Button from '../objects/Button';
 let TOPBARHEIGHT;
 
 const socket = io.connect(`http://localhost:8080/`);
@@ -11,10 +10,9 @@ socket.on(`start`, message => {
 export default class Menu extends Phaser.State {
   create() {
     this.createBackground();
-    this.createButton();
-    this.createInstructions();
     this.createLeftSide();
     this.createRightSide();
+    console.log(`menu`);
   }
   createBackground() {
     const graphics = this.game.add.graphics(0, 0);
@@ -35,11 +33,6 @@ export default class Menu extends Phaser.State {
     const style = {font: `bold 40px Avenir`, fill: `#99A5A7`, boundsAlignH: `center`, boundsAlignV: `middle`};
     const text  = this.game.add.text(0, 0, `SJOELBAK BATTLE`, style);
     text.setTextBounds(0, 0, this.game.width, TOPBARHEIGHT + 50);
-  }
-  createButton() {
-    const button = new Button(this.game, this.world.centerX, this.world.centerY + 300, this.buttonClicked, this, `blue`, `Start`);
-    button.anchor.setTo(0.5, 0.5);
-    this.add.existing(button);
   }
 
   createLeftSide() {
@@ -79,14 +72,9 @@ export default class Menu extends Phaser.State {
 
   }
 
-  createInstructions() {
-
-  }
-  buttonClicked() {
-    this.state.start(`Play`);
-  }
   update() {
     if (play) {
+      play = false;
       this.state.start(`Play`);
     }
   }

@@ -105,6 +105,9 @@ export default class Play extends Phaser.State {
     this.createFood();
     this.createRedTeam();
     this.createBlueTeam();
+
+
+    console.log(`play`);
   }
 
   createBackground() {
@@ -281,12 +284,10 @@ export default class Play extends Phaser.State {
   }
 
   throwFood(team, points) {
-    console.log(team, points);
-    const position = Math.round(Math.random() * 4);
+    const position = Math.round(Math.random() * 3);
     const step = (this.game.height - TOPBARHEIGHT) / 4;
     const yPos = TOPBARHEIGHT + (step * position) + (step / 2);
     let fooditem;
-    console.log(points);
     if (points === 1) {
       fooditem = this.ijsElements.getFirstDead(false);
     } else if (points === 2) {

@@ -6,12 +6,15 @@ let winner, winScore;
 
 let restart = false;
 
+let timer = 5;
+
 export default class Win extends Phaser.State {
   init(newWinner, newWinScore) {
     winner = newWinner;
     winScore = newWinScore;
   }
   create() {
+    timer = 5;
     this.createBackground();
     this.createCountdown();
   }
@@ -43,7 +46,6 @@ export default class Win extends Phaser.State {
   createCountdown() {
     const styleOpnieuw = {font: `bold 30px Avenir`, fill: `white`, boundsAlignH: `center`, boundsAlignV: `middle`};
     const textOpnieuw  = this.game.add.text(0, 0, `Nieuw spel start binnen 5 seconden`, styleOpnieuw);
-    let timer = 5;
     textOpnieuw.setTextBounds(0, 0, this.game.width, 1400);
     const countdown = setInterval(
       function() {
@@ -57,6 +59,7 @@ export default class Win extends Phaser.State {
   }
   update() {
     if (restart === true) {
+      restart = false;
       this.state.start(`Menu`);
     }
   }

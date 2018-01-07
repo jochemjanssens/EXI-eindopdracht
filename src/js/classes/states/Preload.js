@@ -21,6 +21,5 @@ export default class Preload extends Phaser.State {
   }
   create() {
     this.state.start(`Menu`);
-    console.log(`game klaar`);
   }
 }
