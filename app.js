@@ -67,12 +67,13 @@ new five.Boards([ "A", "B" ]).on("ready", function() {
     const button = new five.Button(8);
 
     button.on("down", function() {
-      console.log("body");
      io.sockets.emit(`start`, true);
+     console.log(board.id + " down");
     });
 
     button.on("up", function() {
       io.sockets.emit(`start`, false);
+      console.log("up");
     });
 
     const laser = new five.Led({

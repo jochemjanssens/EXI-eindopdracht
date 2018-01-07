@@ -94,6 +94,9 @@ export default class Play extends Phaser.State {
     TOPBARHEIGHT = this.game.height / 6;
     CENTERFIELD = this.game.height / 2 + TOPBARHEIGHT / 2;
 
+    redScore = 0;
+    blueScore = 0;
+
     this.cursors = this.input.keyboard.createCursorKeys();
 
     this.createBackground();
@@ -201,37 +204,37 @@ export default class Play extends Phaser.State {
   }
 
   createFood() {
-    this.apples = this.add.group();
-    this.apples.enableBody = true;
-    this.apples.createMultiple(4, `apple`);
-    this.apples.setAll(`anchor.x`, 0.5);
-    this.apples.setAll(`anchor.y`, 0.5);
+    this.ijsElements = this.add.group();
+    this.ijsElements.enableBody = true;
+    this.ijsElements.createMultiple(4, `ijs`);
+    this.ijsElements.setAll(`anchor.x`, 0.5);
+    this.ijsElements.setAll(`anchor.y`, 0.5);
 
-    this.bananas = this.add.group();
-    this.bananas.enableBody = true;
-    this.bananas.createMultiple(4, `banana`);
-    this.bananas.setAll(`anchor.x`, 0.5);
-    this.bananas.setAll(`anchor.y`, 0.5);
+    this.hotdogElements = this.add.group();
+    this.hotdogElements.enableBody = true;
+    this.hotdogElements.createMultiple(4, `hotdog`);
+    this.hotdogElements.setAll(`anchor.x`, 0.5);
+    this.hotdogElements.setAll(`anchor.y`, 0.5);
 
-    this.pears = this.add.group();
-    this.pears.enableBody = true;
-    this.pears.createMultiple(4, `pear`);
-    this.pears.setAll(`anchor.x`, 0.5);
-    this.pears.setAll(`anchor.y`, 0.5);
+    this.donutElements = this.add.group();
+    this.donutElements.enableBody = true;
+    this.donutElements.createMultiple(4, `donut`);
+    this.donutElements.setAll(`anchor.x`, 0.5);
+    this.donutElements.setAll(`anchor.y`, 0.5);
 
-    this.cherries = this.add.group();
-    this.cherries.enableBody = true;
-    this.cherries.createMultiple(4, `cherry`);
-    this.cherries.setAll(`anchor.x`, 0.5);
-    this.cherries.setAll(`anchor.y`, 0.5);
+    this.burgerElements = this.add.group();
+    this.burgerElements.enableBody = true;
+    this.burgerElements.createMultiple(4, `burger`);
+    this.burgerElements.setAll(`anchor.x`, 0.5);
+    this.burgerElements.setAll(`anchor.y`, 0.5);
   }
 
   update() {
     this.chef.body.velocity.x -= this.chef.body.velocity.x / 10;
-    this.physics.arcade.overlap(this.chef, this.apples, this.foodHit, null, this);
-    this.physics.arcade.overlap(this.chef, this.bananas, this.foodHit, null, this);
-    this.physics.arcade.overlap(this.chef, this.pears, this.foodHit, null, this);
-    this.physics.arcade.overlap(this.chef, this.cherries, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.ijsElements, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.hotdogElements, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.donutElements, this.foodHit, null, this);
+    this.physics.arcade.overlap(this.chef, this.burgerElements, this.foodHit, null, this);
 
     this.inputHandler();
 
@@ -285,13 +288,13 @@ export default class Play extends Phaser.State {
     let fooditem;
     console.log(points);
     if (points === 1) {
-      fooditem = this.apples.getFirstDead(false);
+      fooditem = this.ijsElements.getFirstDead(false);
     } else if (points === 2) {
-      fooditem = this.bananas.getFirstDead(false);
+      fooditem = this.hotdogElements.getFirstDead(false);
     } else if (points === 3) {
-      fooditem = this.pears.getFirstDead(false);
+      fooditem = this.donutElements.getFirstDead(false);
     } else if (points === 4) {
-      fooditem = this.cherries.getFirstDead(false);
+      fooditem = this.burgerElements.getFirstDead(false);
     }
     if (!fooditem) {
       return;

@@ -20,7 +20,7 @@ export default class Preload extends Phaser.State {
     this.load.image(`bg-effect`, `assets/bg_effect.png`);
   }
   create() {
-    this.state.start(`Play`);
+    this.state.start(`Menu`);
     console.log(`game klaar`);
   }
 }
