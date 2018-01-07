@@ -1,4 +1,3 @@
-const socket = io.connect(`http://localhost:8080/`);
 let down1 = false;
 let down2 = false;
 let down3 = false;
@@ -17,7 +16,9 @@ let blueScore = 0;
 
 let redScoreText, blueScoreText;
 
-socket.on(`updateA`, message => {
+
+
+/*socket.on(`updateA`, message => {
   if (Object.keys(message)[0] === `one`) {
     if (message.one === true) {
       down1 = true;
@@ -85,7 +86,7 @@ socket.on(`updateB`, message => {
       down8 = false;
     }
   }
-});
+});*/
 
 
 export default class Play extends Phaser.State {
@@ -232,7 +233,144 @@ export default class Play extends Phaser.State {
     this.burgerElements.setAll(`anchor.y`, 0.5);
   }
 
+  /*socket.on(`updateA`, message => {
+    if (Object.keys(message)[0] === `one`) {
+      if (message.one === true) {
+        down1 = true;
+        console.log(`red 1`);
+      } else {
+        down1 = false;
+      }
+    }
+    if (Object.keys(message)[0] === `two`) {
+      if (message.two === true) {
+        down2 = true;
+        console.log(`red 2`);
+      } else {
+        down2 = false;
+      }
+    }
+    if (Object.keys(message)[0] === `three`) {
+      if (message.three === true) {
+        down3 = true;
+        console.log(`red 3`);
+      } else {
+        down3 = false;
+      }
+    }
+    if (Object.keys(message)[0] === `four`) {
+      if (message.four === true) {
+        down4 = true;
+        console.log(`red 4`);
+      } else {
+        down4 = false;
+      }
+    }
+  });
+
+  socket.on(`updateB`, message => {
+    if (Object.keys(message)[0] === `one`) {
+      if (message.one === true) {
+        down5 = true;
+        console.log(`blue 1`);
+      } else {
+        down5 = false;
+      }
+    }
+    if (Object.keys(message)[0] === `two`) {
+      if (message.two === true) {
+        down6 = true;
+        console.log(`blue 2`);
+      } else {
+        down6 = false;
+      }
+    }
+    if (Object.keys(message)[0] === `three`) {
+      if (message.three === true) {
+        down7 = true;
+        console.log(`blue 3`);
+      } else {
+        down7 = false;
+      }
+    }
+    if (Object.keys(message)[0] === `four`) {
+      if (message.four === true) {
+        down8 = true;
+        console.log(`blue 4`);
+      } else {
+        down8 = false;
+      }
+    }
+  });*/
+
+
   update() {
+    const value = document.querySelector(`.start`).innerHTML;
+
+    if (value === `Atrue1`) {
+      down1 = true;
+
+      console.log(`red 1`);
+    } else {
+      down1 = false;
+    }
+
+    if (value === `Atrue2`) {
+      down2 = true;
+
+      console.log(`red 1`);
+    } else {
+      down2 = false;
+    }
+
+    if (value === `Atrue3`) {
+      down3 = true;
+
+      console.log(`red 1`);
+    } else {
+      down3 = false;
+    }
+
+    if (value === `Atrue4`) {
+      down4 = true;
+
+      console.log(`red 1`);
+    } else {
+      down4 = false;
+    }
+    if (value === `Btrue1`) {
+      down5 = true;
+
+      console.log(`blue 1`);
+    } else {
+      down5 = false;
+    }
+
+    if (value === `Btrue2`) {
+      down6 = true;
+
+      console.log(`blue 2`);
+    } else {
+      down6 = false;
+    }
+
+    if (value === `Btrue3`) {
+      down7 = true;
+
+      console.log(`blue 3`);
+    } else {
+      down7 = false;
+    }
+
+    if (value === `Btrue4`) {
+      down8 = true;
+
+      console.log(`blue 4`);
+    } else {
+      down8 = false;
+    }
+    document.querySelector(`.start`).innerHTML = false;
+
     this.chef.body.velocity.x -= this.chef.body.velocity.x / 10;
     this.physics.arcade.overlap(this.chef, this.ijsElements, this.foodHit, null, this);
     this.physics.arcade.overlap(this.chef, this.hotdogElements, this.foodHit, null, this);

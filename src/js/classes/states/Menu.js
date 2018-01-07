@@ -1,11 +1,6 @@
 let TOPBARHEIGHT;
 
-const socket = io.connect(`http://localhost:8080/`);
 let play = false;
-socket.on(`start`, message => {
-  console.log(message);
-  play = message;
-});
 
 export default class Menu extends Phaser.State {
   create() {
@@ -73,8 +68,10 @@ export default class Menu extends Phaser.State {
   }
 
   update() {
-    if (play) {
-      play = false;
+    play = document.querySelector(`.start`).innerHTML;
+    console.log(play);
+    if (play === `true`) {
+      document.querySelector(`.start`).innerHTML = false;
       this.state.start(`Play`);
     }
   }
